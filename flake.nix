@@ -1,5 +1,5 @@
 {
-  description = "Binaryen development shell";
+  description = "Binaryen development shell and patched wasm-opt package";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
@@ -10,6 +10,11 @@
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system}; in
       {
+        packages.default = pkgs.binaryen.overrideAttrs (_: {
+          version = "patched-lsb-ctz";
+          src = self;
+        });
+
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             cmake

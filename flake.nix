@@ -10,9 +10,13 @@
     flake-utils.lib.eachDefaultSystem (system:
       let pkgs = nixpkgs.legacyPackages.${system}; in
       {
-        packages.default = pkgs.binaryen.overrideAttrs (_: {
+        packages.default = pkgs.binaryen.overrideAttrs (old: {
           version = "patched-lsb-ctz";
           src = self;
+          doCheck = false;
+          preConfigure = ''
+            cmakeFlagsArray=($cmakeFlagsArray -DBUILD_TESTS=0)
+          '';
         });
 
         devShells.default = pkgs.mkShell {
